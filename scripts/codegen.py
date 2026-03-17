@@ -60,46 +60,8 @@ PYTHON_TEMPLATE = textwrap.dedent('''\
 GO_TEMPLATE = textwrap.dedent('''\
     package base256
 
-    import "strings"
-
-    type ErrUnknownWord string
-
-    func (e ErrUnknownWord) Error() string {{
-    \treturn "unknown word: " + string(e)
-    }}
-
     var wordlist = [256]string{{
     {wordlist}
-    }}
-
-    var wordToByte map[string]byte
-
-    func init() {{
-    \twordToByte = make(map[string]byte, 256)
-    \tfor i, w := range wordlist {{
-    \t\twordToByte[w] = byte(i)
-    \t}}
-    }}
-
-    func Encode(data []byte) string {{
-    \tparts := make([]string, len(data))
-    \tfor i, b := range data {{
-    \t\tparts[i] = wordlist[b]
-    \t}}
-    \treturn strings.Join(parts, " ")
-    }}
-
-    func Decode(phrase string) ([]byte, error) {{
-    \twords := strings.Fields(strings.ToLower(phrase))
-    \tresult := make([]byte, len(words))
-    \tfor i, w := range words {{
-    \t\tb, ok := wordToByte[w]
-    \t\tif !ok {{
-    \t\t\treturn nil, ErrUnknownWord(w)
-    \t\t}}
-    \t\tresult[i] = b
-    \t}}
-    \treturn result, nil
     }}
 ''')
 
@@ -108,7 +70,7 @@ with open(py_path, 'w') as fp:
     fp.write(PYTHON_TEMPLATE.format(wordlist=format_wordlist_py()))
 print(f"Generated {py_path}")
 
-go_path = os.path.join(os.path.dirname(__file__), '..', 'base256.go')
+go_path = os.path.join(os.path.dirname(__file__), '..', 'wordlist.go')
 with open(go_path, 'w') as fp:
     fp.write(GO_TEMPLATE.format(wordlist=format_wordlist_go()))
 print(f"Generated {go_path}")
