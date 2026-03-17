@@ -2,7 +2,7 @@
 import os
 import textwrap
 
-with open(os.path.join(os.path.dirname(__file__), 'selected_256.txt')) as fp:
+with open(os.path.join(os.path.dirname(__file__), '..', 'selected_256.txt')) as fp:
     words = fp.read().split()
 
 assert len(words) == 256, f"Expected 256 words, got {len(words)}"
@@ -60,10 +60,13 @@ PYTHON_TEMPLATE = textwrap.dedent('''\
 GO_TEMPLATE = textwrap.dedent('''\
     package base256
 
-    import (
-    \t"errors"
-    \t"strings"
-    )
+    import "strings"
+
+    type ErrUnknownWord string
+
+    func (e ErrUnknownWord) Error() string {{
+    \treturn "unknown word: " + string(e)
+    }}
 
     var wordlist = [256]string{{
     {wordlist}
@@ -92,7 +95,7 @@ GO_TEMPLATE = textwrap.dedent('''\
     \tfor i, w := range words {{
     \t\tb, ok := wordToByte[w]
     \t\tif !ok {{
-    \t\t\treturn nil, errors.New("unknown word: " + w)
+    \t\t\treturn nil, ErrUnknownWord(w)
     \t\t}}
     \t\tresult[i] = b
     \t}}
@@ -100,14 +103,12 @@ GO_TEMPLATE = textwrap.dedent('''\
     }}
 ''')
 
-os.makedirs(os.path.join(os.path.dirname(__file__), 'gen'), exist_ok=True)
-
-py_path = os.path.join(os.path.dirname(__file__), 'gen', 'base256.py')
+py_path = os.path.join(os.path.dirname(__file__), '..', 'base256.py')
 with open(py_path, 'w') as fp:
     fp.write(PYTHON_TEMPLATE.format(wordlist=format_wordlist_py()))
 print(f"Generated {py_path}")
 
-go_path = os.path.join(os.path.dirname(__file__), 'gen', 'base256.go')
+go_path = os.path.join(os.path.dirname(__file__), '..', 'base256.go')
 with open(go_path, 'w') as fp:
     fp.write(GO_TEMPLATE.format(wordlist=format_wordlist_go()))
 print(f"Generated {go_path}")

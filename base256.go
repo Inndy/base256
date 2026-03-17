@@ -1,9 +1,12 @@
 package base256
 
-import (
-	"errors"
-	"strings"
-)
+import "strings"
+
+type ErrUnknownWord string
+
+func (e ErrUnknownWord) Error() string {
+	return "unknown word: " + string(e)
+}
 
 var wordlist = [256]string{
 	"abandon", "ability", "abstract", "account", "acquire", "actress", "adapt", "advance",
@@ -63,7 +66,7 @@ func Decode(phrase string) ([]byte, error) {
 	for i, w := range words {
 		b, ok := wordToByte[w]
 		if !ok {
-			return nil, errors.New("unknown word: " + w)
+			return nil, ErrUnknownWord(w)
 		}
 		result[i] = b
 	}

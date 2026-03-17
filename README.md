@@ -9,7 +9,7 @@ Encode arbitrary bytes as human-readable words using a curated subset of the BIP
 ### Python
 
 ```python
-from gen.base256 import encode, decode
+from base256 import encode, decode
 
 encoded = encode(b"hello")   # "hospital ranch outdoor pebble photo"
 decoded = decode(encoded)     # b"hello"
@@ -18,8 +18,8 @@ decoded = decode(encoded)     # b"hello"
 CLI:
 
 ```sh
-echo -n "hello" | python3 gen/base256.py encode
-echo "hospital ranch outdoor pebble photo" | python3 gen/base256.py decode
+echo -n "hello" | python3 base256.py encode
+echo "gossip giggle harvest harvest hip" | python3 base256.py decode
 ```
 
 ### Go
@@ -42,7 +42,7 @@ decoded, err := base256.Decode(encoded)
 
 ## Code Generation
 
-`codegen.py` reads `selected_256.txt` and generates `gen/base256.py` and `gen/base256.go`.
+`scripts/codegen.py` reads `selected_256.txt` and generates `base256.go` and `base256.py`.
 
 ```sh
 make
@@ -51,11 +51,12 @@ make
 ## File Structure
 
 - `bip39wordlist.txt` - Original BIP-39 2048 wordlist
-- `pick_words.py` - Word selection algorithm
+- `scripts/pick_words.py` - Word selection algorithm
+- `scripts/codegen.py` - Generates encoder/decoder source files
 - `selected_256.txt` - Selected 256 words
-- `codegen.py` - Generates encoder/decoder source files
-- `gen/base256.py` - Generated Python encoder/decoder
-- `gen/base256.go` - Generated Go encoder/decoder
+- `base256.go` - Generated Go encoder/decoder
+- `base256.py` - Generated Python encoder/decoder
+- `base256_test.go` - Go tests
 
 ## License
 

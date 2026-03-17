@@ -1,9 +1,9 @@
-all: gen/base256.go
+all: base256.go
 
-selected_256.txt: bip39wordlist.txt pick_words.py
-	python3 pick_words.py
+selected_256.txt: bip39wordlist.txt scripts/pick_words.py
+	python3 scripts/pick_words.py
 
-gen/base256.py: selected_256.txt codegen.py
-	python3 codegen.py
+base256.py: selected_256.txt scripts/codegen.py
+	python3 scripts/codegen.py
 
-gen/base256.go: gen/base256.py
+base256.go: base256.py
