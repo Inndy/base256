@@ -17,16 +17,24 @@ func init() {
 	}
 }
 
-func Encode(data []byte) string {
+// Encode encodes data as a sequence of words joined by sep.
+// The separator must not contain only letters, as it may conflict with dictionary words.
+func Encode(data []byte, sep string) string {
 	parts := make([]string, len(data))
 	for i, b := range data {
 		parts[i] = wordlist[b]
 	}
-	return strings.Join(parts, " ")
+	return strings.Join(parts, sep)
 }
 
-func Decode(phrase string) ([]byte, error) {
-	words := strings.Fields(strings.ToLower(phrase))
+// Decode decodes a phrase produced by Encode back into bytes.
+// The separator must not be a substring of any dictionary word,
+// so avoid using only letters as sep.
+func Decode(phrase string, sep string) ([]byte, error) {
+	if phrase == "" {
+		return nil, nil
+	}
+	words := strings.Split(strings.ToLower(phrase), strings.ToLower(sep))
 	result := make([]byte, len(words))
 	for i, w := range words {
 		b, ok := wordToByte[w]

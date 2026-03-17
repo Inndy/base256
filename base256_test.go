@@ -18,8 +18,8 @@ func TestRoundTrip(t *testing.T) {
 		[]byte("hello"),
 	}
 	for _, data := range tests {
-		encoded := base256.Encode(data)
-		decoded, err := base256.Decode(encoded)
+		encoded := base256.Encode(data, " ")
+		decoded, err := base256.Decode(encoded, " ")
 		if err != nil {
 			t.Errorf("Decode(Encode(%v)) error: %v", data, err)
 			continue
@@ -35,7 +35,7 @@ func TestRoundTripAllBytes(t *testing.T) {
 	for i := range data {
 		data[i] = byte(i)
 	}
-	decoded, err := base256.Decode(base256.Encode(data))
+	decoded, err := base256.Decode(base256.Encode(data, " "), " ")
 	if err != nil {
 		t.Fatalf("round trip error: %v", err)
 	}
@@ -46,15 +46,15 @@ func TestRoundTripAllBytes(t *testing.T) {
 
 func TestEncodeWordCount(t *testing.T) {
 	data := make([]byte, 10)
-	encoded := base256.Encode(data)
-	words := strings.Fields(encoded)
+	encoded := base256.Encode(data, " ")
+	words := strings.Split(encoded, " ")
 	if len(words) != 10 {
 		t.Errorf("Encode produced %d words, want 10", len(words))
 	}
 }
 
 func TestDecodeUnknownWord(t *testing.T) {
-	_, err := base256.Decode("notaword")
+	_, err := base256.Decode("notaword", " ")
 	if err == nil {
 		t.Fatal("expected error for unknown word")
 	}
@@ -69,7 +69,7 @@ func TestDecodeUnknownWord(t *testing.T) {
 
 func TestDecodeCaseInsensitive(t *testing.T) {
 	data := []byte{0, 1, 2}
-	encoded := base256.Encode(data)
+	encoded := base256.Encode(data, " ")
 
 	upper := ""
 	for _, c := range encoded {
@@ -80,7 +80,7 @@ func TestDecodeCaseInsensitive(t *testing.T) {
 		}
 	}
 
-	decoded, err := base256.Decode(upper)
+	decoded, err := base256.Decode(upper, " ")
 	if err != nil {
 		t.Fatalf("Decode uppercase error: %v", err)
 	}
@@ -90,13 +90,13 @@ func TestDecodeCaseInsensitive(t *testing.T) {
 }
 
 func TestEncodeEmpty(t *testing.T) {
-	if got := base256.Encode(nil); got != "" {
+	if got := base256.Encode(nil, " "); got != "" {
 		t.Errorf("Encode(nil) = %q, want empty", got)
 	}
 }
 
 func TestDecodeEmpty(t *testing.T) {
-	decoded, err := base256.Decode("")
+	decoded, err := base256.Decode("", " ")
 	if err != nil {
 		t.Fatalf("Decode empty error: %v", err)
 	}
