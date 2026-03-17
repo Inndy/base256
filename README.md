@@ -24,8 +24,12 @@ echo "gossip giggle harvest harvest hip" | python3 base256.py decode
 
 ### Go
 
+```sh
+go get go.inndy.tw/base256
+```
+
 ```go
-import "your/module/gen"
+import "go.inndy.tw/base256"
 
 encoded := base256.Encode([]byte("hello"))
 decoded, err := base256.Decode(encoded)
